@@ -29,7 +29,7 @@ server.use(cors());
 
 server.use(
   session({
-    name: "monkey",
+    name: "chocolatechip",
     secret: "keep it secret",
     cookie: {
       maxAge: 1000 * 60 * 60,
@@ -40,7 +40,7 @@ server.use(
     resave: false,
     saveUninitialized: false,
     store: new Store({
-      knex: require("../database/db-config"),
+      knex: require("../data/db-config"),
       tablename: "sessions",
       sisfieldname: "sid",
       creatTable: true,

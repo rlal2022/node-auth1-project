@@ -26,7 +26,7 @@ async function restricted(req, res, next) {
   }
 */
 async function checkUsernameFree(req, res, next) {
-  const user = await db("users").where("username", username_id);
+  const user = await db("users").where("username", user_id);
   if (user) {
     res.status(422).json({ message: "Username taken" });
   } else {
