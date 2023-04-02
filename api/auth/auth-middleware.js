@@ -1,5 +1,6 @@
 /*eslint-disable*/
 const db = require("../../data/db-config");
+const User = require("../users/users-model");
 
 /*
   If the user does not have a session saved in the server
@@ -26,9 +27,10 @@ async function restricted(req, res, next) {
   }
 */
 async function checkUsernameFree(req, res, next) {
-  const user = await db("users").where("username", user_id);
+  const user = await User.findBy({ username: req.body.username });
   if (user) {
     res.status(422).json({ message: "Username taken" });
+    next();
   } else {
     next();
   }
@@ -43,10 +45,11 @@ async function checkUsernameFree(req, res, next) {
   }
 */
 async function checkUsernameExists(req, res, next) {
-  if (!req.body.username) {
-    next({ status: 401, message: "Invalid credentials" });
-  } else {
+  const { username } = req.body;
+  if (username) {
     next();
+  } else {
+    next({ status: 401, message: "invalid credentials" });
   }
 }
 

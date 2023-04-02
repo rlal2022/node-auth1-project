@@ -5,7 +5,6 @@ const bcrypt = require("bcryptjs");
 const router = express.Router();
 const User = require("../users/users-model");
 const {
-  restricted,
   checkUsernameFree,
   checkUsernameExists,
   checkPasswordLength,
@@ -43,7 +42,6 @@ const {
 
 router.post(
   "/register",
-  restricted,
   checkUsernameFree,
   checkPasswordLength,
   async (req, res, next) => {
@@ -84,6 +82,7 @@ router.post("/login", checkUsernameExists, async (req, res, next) => {
       req.session.user = user;
       res.status(200).json({ message: `Welcome ${username}!` });
     } else {
+      console.log(user);
       next();
     }
   } catch (err) {
