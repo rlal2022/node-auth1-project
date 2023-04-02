@@ -46,11 +46,11 @@ router.post(
   checkPasswordLength,
   async (req, res, next) => {
     try {
-      const { username, password } = req.body;
+      const { password } = req.body;
       const hash = bcrypt.hashSync(password, 8);
       const newUser = { username, password: hash };
       await User.add(newUser);
-      res.status(200).json(newUser);
+      res.status(201).json(newUser);
     } catch (err) {
       next(err);
     }
@@ -82,8 +82,7 @@ router.post("/login", checkUsernameExists, async (req, res, next) => {
       req.session.user = user;
       res.status(200).json({ message: `Welcome ${username}!` });
     } else {
-      console.log(user);
-      next();
+      next({ status: 401, message: "invalid credentials" });
     }
   } catch (err) {
     next(err);
