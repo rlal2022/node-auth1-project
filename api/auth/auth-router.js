@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const router = express.Router();
 const User = require("../users/users-model");
 const {
+  restricted,
   checkUsernameFree,
   checkUsernameExists,
   checkPasswordLength,
@@ -42,6 +43,7 @@ const {
 
 router.post(
   "/register",
+  restricted,
   checkUsernameFree,
   checkPasswordLength,
   async (req, res, next) => {
@@ -50,7 +52,7 @@ router.post(
       const hash = bcrypt.hashSync(password, 8);
       const newUser = { username, password: hash };
       await User.add(newUser);
-      res.status(201).json(newUser);
+      res.status(200).json(newUser);
     } catch (err) {
       next(err);
     }
@@ -78,12 +80,11 @@ router.post("/login", checkUsernameExists, async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const [user] = await User.findBy({ username });
-    if (user && bcrypt.compareSync(user.username, user.password)) {
+    if (user && bcrypt.compareSync(password, user.password)) {
       req.session.user = user;
       res.status(200).json({ message: `Welcome ${username}!` });
     } else {
-      console.log(user);
-      next();
+      next({ status: 401, message: "invalid credentials" });
     }
   } catch (err) {
     next(err);
