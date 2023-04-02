@@ -5,7 +5,6 @@ const bcrypt = require("bcryptjs");
 const router = express.Router();
 const User = require("../users/users-model");
 const {
-  restricted,
   checkUsernameFree,
   checkUsernameExists,
   checkPasswordLength,
@@ -43,7 +42,6 @@ const {
 
 router.post(
   "/register",
-  restricted,
   checkUsernameFree,
   checkPasswordLength,
   async (req, res, next) => {
