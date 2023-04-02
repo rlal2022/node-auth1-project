@@ -45,15 +45,13 @@ router.post(
   checkUsernameFree,
   checkPasswordLength,
   async (req, res, next) => {
-    try {
-      const { username, password } = req.body;
-      const hash = bcrypt.hashSync(password, 8);
-      const newUser = { username, password: hash };
-      await User.add(newUser);
-      res.status(200).json(newUser);
-    } catch (err) {
-      next(err);
-    }
+    const { username, password } = req.body;
+    const hash = bcrypt.hashSync(password, 8);
+    await User.add({ username, password: hash })
+      .then((newUser) => {
+        res.status(201).json(newUser);
+      })
+      .catch(next);
   }
 );
 
